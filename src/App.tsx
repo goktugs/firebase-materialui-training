@@ -6,6 +6,7 @@ import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { DropzoneSection } from "./Components/DropzoneSection";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
                 disableUnderline: true,
               }}
             />
+            <DropzoneSection />
 
             <Typography variant="body2" color="text.secondary">
               Lizards are a widespread group of squamate reptiles, with over
