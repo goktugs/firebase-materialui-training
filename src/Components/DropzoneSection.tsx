@@ -1,39 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 
+const container: React.CSSProperties = {
+  width: "100%",
+  height: "300px",
+  backgroundColor: "#DFB8A8",
+  position: "relative",
+};
+
+const dropzone: React.CSSProperties = {
+  width: "100%",
+  height: "100%",
+};
 export const DropzoneSection = () => {
-  const thumbsContainer: React.CSSProperties = {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 16,
-  };
-
-  const thumb: React.CSSProperties = {
-    display: "inline-flex",
-    borderRadius: 2,
-    border: "1px solid #eaeaea",
-    marginBottom: 8,
-    marginRight: 8,
-    width: 100,
-    height: 100,
-    padding: 4,
-    boxSizing: "border-box",
-  };
-
-  const thumbInner: React.CSSProperties = {
-    display: "flex",
-    minWidth: 0,
-    overflow: "hidden",
-  };
-
-  const img: React.CSSProperties = {
-    display: "block",
-    width: "auto",
-    height: "100%",
-  };
-
   const [files, setFiles] = useState<(File & { preview: string })[]>([]);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/*": [],
@@ -49,32 +32,62 @@ export const DropzoneSection = () => {
     },
   });
 
-  const thumbs = files.map((file) => (
-    <div style={thumb} key={file.name}>
-      <div style={thumbInner}>
-        <img
-          src={file.preview}
-          style={img}
-          onLoad={() => {
-            URL.revokeObjectURL(file.preview);
-          }}
-        />
-      </div>
-    </div>
-  ));
-
   useEffect(() => {
     return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, [files]);
 
+  const handleClickImage = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div>
-      <section className="container">
-        <div {...getRootProps({ className: "dropzone" })}>
-          <input {...getInputProps()} />
-          <p>Drag 'n' drop some files here, or click to select files</p>
+      <section style={container}>
+        <div style={dropzone} {...getRootProps()}>
+          <input {...getInputProps()} ref={fileInputRef} />{" "}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              color: "black",
+              height: "100%",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "60px",
+              }}
+            >
+              +
+            </span>
+            <p
+              style={{
+                fontSize: "20px",
+                margin: "0px",
+              }}
+            >
+              GÖRSEL
+            </p>
+          </div>
         </div>
-        <aside style={thumbsContainer}>{thumbs}</aside>
+        {files.length > 0 && (
+          <img
+            onClick={handleClickImage}
+            onLoad={() => {
+              URL.revokeObjectURL(files?.[0].preview);
+            }}
+            src={files[0]?.preview}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+            }}
+          />
+        )}
       </section>
     </div>
   );
